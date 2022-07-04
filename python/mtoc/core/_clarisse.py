@@ -3,14 +3,16 @@
 #      mail: zclongpop123@163.com
 #      time: Fri Jul  1 14:47:27 2022
 #========================================
+import os
+import json
 import ix
+from .. import env
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-def main():
+def read_tex_data():
     '''
     '''
-    pass
+    if not os.path.exists(env.TEX_TEMP_PATH):
+        return dict()
 
-
-
-if __name__ == '__main__':
-    main()
+    with open(env.TEX_TEMP_PATH, 'r') as f:
+        return json.load(f)
