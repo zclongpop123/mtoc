@@ -3,9 +3,11 @@
 #      mail: zclongpop123@163.com
 #      time: Fri Jul  1 14:18:26 2022
 #========================================
+import json
 import maya.cmds as mc
 import pymel.core as pm
 import maya.OpenMaya as OpenMaya
+from .. import env
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 def get_ai_tex_data(shader):
     '''
@@ -40,5 +42,9 @@ def get_all_tex_data():
 
 
 
-if __name__ == '__main__':
-    print(get_all_tex_data())
+def export_tex_data():
+    '''
+    '''
+    with open(env.TEX_TEMP_PATH, 'w') as f:
+        json.dump(get_all_tex_data(), f, indent=4)
+    return True
