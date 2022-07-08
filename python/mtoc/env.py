@@ -5,4 +5,10 @@
 #========================================
 import os
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-TEX_TEMP_PATH = os.path.expanduser('~/mtoc_tex.json')
+TEX_TEMP_PATH = os.path.expanduser('~/mtoc_tex.json').replace('/Documents/', '')
+
+MAYA_CLA_ATTR_MAPPING = {
+    'baseColor'         : 'base_color',
+    'normalCamera'      : 'normal_input',
+    'specularRoughness' : 'specular_roughness'
+}
