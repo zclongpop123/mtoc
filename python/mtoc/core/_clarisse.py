@@ -19,17 +19,28 @@ def read_tex_data():
 
 
 
+
+def create_clarisse_hierarchy():
+    '''
+    '''
+    ix.cmds.CreateContext('mat', 'Global', 'build://project/scene')
+    ix.cmds.CreateContext('tex', 'Global', 'build://project/scene')
+
+
+
 def create_tex_network():
     '''
     '''
+    create_clarisse_hierarchy()
+
     data = read_tex_data()
     for shd, textures in data.items():
-        shader_node = ix.cmds.CreateObject(shd, 'MaterialPhysicalAutodeskStandardSurface', 'Global', 'build://project/scene')
+        shader_node = ix.cmds.CreateObject(shd, 'MaterialPhysicalAutodeskStandardSurface', 'Global', 'build://project/scene/mat')
 
         for attr, _map in textures.items():
             _cla_attr = env.MAYA_CLA_ATTR_MAPPING.get(attr.split('.')[-1])
             if not _cla_attr:
                 continue
-            map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureMapFile', 'Global', 'build://project/scene')
+            map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureMapFile', 'Global', 'build://project/scene/tex')
             ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)], [_map])
             ix.cmds.SetTexture(['{0}.{1}'.format(shader_node, _cla_attr)], map_node)
