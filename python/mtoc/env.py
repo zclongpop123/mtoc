@@ -5,4 +5,4 @@
 #========================================
 import os
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-TEX_TEMP_PATH = os.path.expanduser('~/mtoc_tex.json')
+TEX_TEMP_PATH = os.path.expanduser('~/mtoc_tex.json').replace('\\', '/').replace('/Documents/', '/')
