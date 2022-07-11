@@ -13,7 +13,7 @@ def get_ai_tex_data(shader):
     '''
     '''
     data = dict()
-    for attr in ('baseColor', 'specularRoughness', 'opacity', 'normalCamera'):
+    for attr in env.MAYA_CLA_ATTR_MAPPING.keys():
         attr_pml_node = pm.PyNode('{0}.{1}'.format(shader, attr))
         attr_api_node = attr_pml_node.__apiobject__()
         iterator = OpenMaya.MItDependencyGraph(attr_api_node, 

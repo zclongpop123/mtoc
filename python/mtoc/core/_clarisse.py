@@ -62,8 +62,10 @@ def create_tex_network():
                     ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
                     if re.search('normal\.', _map, re.I):
                         normal_map = ix.cmds.CreateObject('normal_map', 'TextureNormalMap', 'Global', 'build://project/scene/tex')
+                    elif re.search('bump\.', _map, re.I):
+                        normal_map = ix.cmds.CreateObject('bump_map',   'TextureBumpMap',   'Global', 'build://project/scene/tex')
                     else:
-                        normal_map = ix.cmds.CreateObject('bump_map',   'TextureBumpMap',    'Global', 'build://project/scene/tex')
+                        normal_map = ix.cmds.CreateObject('dot',        'NodalItemDot',     'Global', 'build://project/scene/tex')
 
                     ix.cmds.SetTexture(['{0}.input'.format(normal_map)], map_node)
                     ix.cmds.SetTexture(['{0}.{1}'.format(shader_node, _cla_attr)], normal_map)

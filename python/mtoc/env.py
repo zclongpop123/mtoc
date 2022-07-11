@@ -9,6 +9,8 @@ TEX_TEMP_PATH = os.path.expanduser('~/mtoc_tex.json').replace('\\', '/').replace
 
 MAYA_CLA_ATTR_MAPPING = {
     'baseColor'         : 'base_color',
+    'metalness'         : 'metalness',
     'normalCamera'      : 'normal_input',
+    'opacity'           : 'opacity',
     'specularRoughness' : 'specular_roughness'
 }
