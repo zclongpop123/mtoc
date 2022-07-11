@@ -9,13 +9,13 @@ import json
 import ix
 from .. import env
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-def read_tex_data():
+def read_tex_data(_json):
     '''
     '''
-    if not os.path.exists(env.TEX_TEMP_PATH):
+    if not os.path.exists(_json):
         return dict()
 
-    with open(env.TEX_TEMP_PATH, 'r') as f:
+    with open(_json, 'r') as f:
         return json.load(f)
 
 
@@ -35,14 +35,19 @@ def create_clarisse_hierarchy():
 
 
 
-def create_tex_network():
+def create_tex_network(_json):
     '''
     '''
     factory = ix.application.get_factory()
 
     create_clarisse_hierarchy()
-    data = read_tex_data()
-    for shd, textures in data.items():
+    data = read_tex_data(_json)
+
+    shder_data = dict()
+    for _dt in data.values():
+        shder_data.update(_dt)
+
+    for shd, textures in shder_data.items():
         if not factory.item_exists('build://project/scene/mat/{0}'.format(shd)):
             shader_node = ix.cmds.CreateObject(shd, 'MaterialPhysicalAutodeskStandardSurface', 'Global', 'build://project/scene/mat')
 

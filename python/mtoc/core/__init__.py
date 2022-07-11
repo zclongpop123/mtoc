@@ -4,11 +4,11 @@
 #      time: Fri Jul  1 14:46:01 2022
 #========================================
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-def main():
+def export_data(_abc=None, _json=None):
     '''
     '''
-    pass
-
-
-if __name__ == '__main__':
-    main()
+    from . import _maya
+    if _abc:
+        _maya.export_alembic(_abc)
+    if _json:
+        _maya.export_tex_data(_json)
