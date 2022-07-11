@@ -4,6 +4,7 @@
 #      time: Fri Jul  1 14:47:27 2022
 #========================================
 import os
+import re
 import json
 import ix
 from .. import env
@@ -51,5 +52,22 @@ def create_tex_network():
                 continue
             if not factory.item_exists('build://project/scene/tex/{0}'.format(attr.replace('.', '__'))):
                 map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureMapFile', 'Global', 'build://project/scene/tex')
-                ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)], [_map])
+                ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [_map])
+
+                if _cla_attr == 'specular_roughness':
+                    ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
+                    ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
+
+                elif _cla_attr == 'normal_input':
+                    ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
+                    if re.search('normal\.', _map, re.I):
+                        normal_map = ix.cmds.CreateObject('normal_map', 'TextureNormalMap', 'Global', 'build://project/scene/tex')
+                    else:
+                        normal_map = ix.cmds.CreateObject('bump_map',   'TextureBumpMap',    'Global', 'build://project/scene/tex')
+
+                    ix.cmds.SetTexture(['{0}.input'.format(normal_map)], map_node)
+                    ix.cmds.SetTexture(['{0}.{1}'.format(shader_node, _cla_attr)], normal_map)
+                    continue
+
+                #-
                 ix.cmds.SetTexture(['{0}.{1}'.format(shader_node, _cla_attr)], map_node)
