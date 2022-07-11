@@ -58,6 +58,10 @@ def create_tex_network():
                     ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
                     ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
 
+                elif _cla_attr == 'metalness':
+                    ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
+                    ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
+
                 elif _cla_attr == 'normal_input':
                     ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
                     if re.search('normal\.', _map, re.I):
