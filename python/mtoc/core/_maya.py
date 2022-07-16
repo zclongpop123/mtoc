@@ -61,8 +61,20 @@ def get_ai_tex_data(shader):
         while not iterator.isDone():
             file_api_mfn  = OpenMaya.MFnDependencyNode(iterator.currentItem())
             file_api_plug = file_api_mfn.findPlug('ftn')
-            data.setdefault('{0}.{1}'.format(shader, attr), file_api_plug.asString())
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['path'] = file_api_plug.asString()
             iterator.next()
+
+
+        bump_node_type = [x.nodeType() for x in attr_pml_node.connections()]
+        if 'aiBump2d' in bump_node_type:
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 0
+        elif 'aiNormalMap' in bump_node_type:
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 1
+
+        elif 'bump2d1' in bump_node_type:
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = attr_pml_node.connections()[0].attr('bumpInterp').get()
+            iterator.next()
+
 
     return data
 

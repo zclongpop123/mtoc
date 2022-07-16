@@ -75,6 +75,30 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(4, -1, -1, -1)
+        self.cbx_imp_abc = QCheckBox(self.centralwidget)
+        self.cbx_imp_abc.setObjectName(u"cbx_imp_abc")
+        self.cbx_imp_abc.setFont(font)
+        self.cbx_imp_abc.setChecked(True)
+
+        self.verticalLayout_4.addWidget(self.cbx_imp_abc)
+
+        self.cbx_imp_json = QCheckBox(self.centralwidget)
+        self.cbx_imp_json.setObjectName(u"cbx_imp_json")
+        self.cbx_imp_json.setFont(font)
+        self.cbx_imp_json.setChecked(True)
+
+        self.verticalLayout_4.addWidget(self.cbx_imp_json)
+
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer_3)
+
+
+        self.verticalLayout_3.addLayout(self.verticalLayout_4)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_3.addItem(self.verticalSpacer)
@@ -101,6 +125,8 @@ class Ui_MainWindow(object):
         self.cbx_exp_abc.setText(QCoreApplication.translate("MainWindow", u"Alembic (.abc)", None))
         self.cbx_exp_json.setText(QCoreApplication.translate("MainWindow", u"Json (.json)", None))
         self.btn_export.setText(QCoreApplication.translate("MainWindow", u"\u5bfc\u51fa", None))
+        self.cbx_imp_abc.setText(QCoreApplication.translate("MainWindow", u"Alembic (.abc)", None))
+        self.cbx_imp_json.setText(QCoreApplication.translate("MainWindow", u"Json (.json)", None))
         self.btn_import.setText(QCoreApplication.translate("MainWindow", u"\u5bfc\u5165", None))
     # retranslateUi
 

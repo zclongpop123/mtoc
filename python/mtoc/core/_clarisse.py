@@ -9,6 +9,13 @@ import json
 import ix
 from .. import env
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+def refrence_abc(_abc):
+    '''
+    '''
+    if os.path.isfile(_abc):
+        ix.cmds.CreateFileReference("build://project/scene", [_abc])
+
+
 def read_tex_data(_json):
     '''
     '''
@@ -47,17 +54,17 @@ def create_tex_network(_json):
     for _dt in data.values():
         shder_data.update(_dt)
 
-    for shd, textures in shder_data.items():
+    for shd, shader_data in shder_data.items():
         if not factory.item_exists('build://project/scene/mat/{0}'.format(shd)):
             shader_node = ix.cmds.CreateObject(shd, 'MaterialPhysicalAutodeskStandardSurface', 'Global', 'build://project/scene/mat')
 
-        for attr, _map in textures.items():
+        for attr, attr_data  in shader_data.items():
             _cla_attr = env.MAYA_CLA_ATTR_MAPPING.get(attr.split('.')[-1])
             if not _cla_attr:
                 continue
             if not factory.item_exists('build://project/scene/tex/{0}'.format(attr.replace('.', '__'))):
                 map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureMapFile', 'Global', 'build://project/scene/tex')
-                ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [_map])
+                ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [attr_data['path']])
 
                 if _cla_attr == 'specular_roughness':
                     ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
@@ -69,10 +76,10 @@ def create_tex_network(_json):
 
                 elif _cla_attr == 'normal_input':
                     ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
-                    if re.search('normal\.', _map, re.I):
-                        normal_map = ix.cmds.CreateObject('normal_map', 'TextureNormalMap', 'Global', 'build://project/scene/tex')
-                    elif re.search('bump\.', _map, re.I):
+                    if attr_data.get('bumpInterp') == 0:
                         normal_map = ix.cmds.CreateObject('bump_map',   'TextureBumpMap',   'Global', 'build://project/scene/tex')
+                    elif attr_data.get('bumpInterp') == 1:
+                        normal_map = ix.cmds.CreateObject('normal_map', 'TextureNormalMap', 'Global', 'build://project/scene/tex')
                     else:
                         normal_map = ix.cmds.CreateObject('dot',        'NodalItemDot',     'Global', 'build://project/scene/tex')
 

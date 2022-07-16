@@ -4,10 +4,20 @@
 #      time: Fri Jul  1 14:48:35 2022
 #========================================
 import os
-import maya.cmds as mc
-import maya.OpenMayaUI as OpenMayaUI
+import sys
+
 from PySide2 import QtWidgets, QtCore
 import shiboken2
+
+exe = os.path.basename(sys.executable)
+if exe == 'maya.exe':
+    import maya.cmds as mc
+    import maya.OpenMayaUI as OpenMayaUI
+
+elif exe == 'clarisse.exe':
+    import ix
+    import pyqt_clarisse
+
 from . import widgets, core
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 def get_maya_window():
@@ -49,23 +59,49 @@ class MtoCUI(QtWidgets.QMainWindow, widgets.Ui_MainWindow):
             json_path = None
 
         core.export_data(abc_path, json_path)
-
+        mc.confirmDialog(t='OK', m='OK!')
 
 
     @QtCore.Slot(bool)
     def on_btn_import_clicked(self, args):
         '''
         '''
-        print(2)
+        input_file = QtWidgets.QFileDialog.getOpenFileName(filter='Alembic(*.abc);;Json File(*.json);;')
+        if not input_file[0]:
+            return
+        
+        file_prefix = os.path.splitext(input_file[0])[0]
+        if self.cbx_imp_abc.isChecked():
+            abc_path = '{0}.abc'.format(file_prefix)
+        else:
+            abc_path = None
 
+        if self.cbx_imp_json.isChecked():
+            json_path = '{0}.json'.format(file_prefix)
+        else:
+            json_path = None
+
+        core.import_data(abc_path, json_path)
 
 
 def main():
     '''
     '''
-    wnd = MtoCUI(get_maya_window())
-    wnd.show()
+    exe = os.path.basename(sys.executable)
+    if exe == 'maya.exe':
+        wnd = MtoCUI(get_maya_window())
+        wnd.show()
 
+    elif exe == 'clarisse.exe': 
+        if not QtWidgets.QApplication.instance():
+            app = QtWidgets.QApplication(sys.argv)
+        else:
+            app = QtWidgets.QApplication.instance()
+        wnd = MtoCUI()
+        wnd.show()
+        pyqt_clarisse.exec_(app) 
+    else:
+        return 0
 
 
 if __name__ == '__main__':
