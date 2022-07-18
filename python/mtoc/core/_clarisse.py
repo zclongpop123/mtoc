@@ -63,15 +63,13 @@ def create_tex_network(_json):
             if not _cla_attr:
                 continue
             if not factory.item_exists('build://project/scene/tex/{0}'.format(attr.replace('.', '__'))):
-                map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureMapFile', 'Global', 'build://project/scene/tex')
+                map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureStreamedMapFile', 'Global', 'build://project/scene/tex')
                 ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [re.sub('\.\d{4}\.', '.<UDIM>.', attr_data['path'])])
 
                 if _cla_attr == 'specular_roughness':
-                    ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
                     ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
 
                 elif _cla_attr == 'metalness':
-                    ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
                     ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)],                  ['1'])
 
                 elif _cla_attr == 'normal_input':
