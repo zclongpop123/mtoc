@@ -64,7 +64,7 @@ def create_tex_network(_json):
                 continue
             if not factory.item_exists('build://project/scene/tex/{0}'.format(attr.replace('.', '__'))):
                 map_node = ix.cmds.CreateObject(attr.replace('.', '__'), 'TextureMapFile', 'Global', 'build://project/scene/tex')
-                ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [attr_data['path']])
+                ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [re.sub('\.\d{4}\.', '.<UDIM>.', attr_data['path'])])
 
                 if _cla_attr == 'specular_roughness':
                     ix.cmds.SetValues(['{0}.single_channel_file_behavior'.format(map_node)],  ['1'])
@@ -89,3 +89,15 @@ def create_tex_network(_json):
 
                 #-
                 ix.cmds.SetTexture(['{0}.{1}'.format(shader_node, _cla_attr)], map_node)
+
+    #- assign shader
+    object_list = ix.api.OfObjectArray()
+    ix.application.get_factory().get_all_objects('GeometryAbcMesh', object_list)
+
+    for i in range(object_list.get_count()):
+        sg = object_list[i].get_module().get_geometry().get_shading_group_names()
+        for j in range(sg.get_count()):
+            shader = data.get(sg[j])
+            if not shader:
+                continue
+            ix.cmds.SetValues(['{0}.materials[{1}]'.format(object_list[i], j)], ['build://project/scene/mat/{0}'.format(list(shader.keys())[0])])
