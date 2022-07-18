@@ -21,13 +21,9 @@ def export_alembic(_abc):
         except:
             return False
 
-    export_objects = mc.ls(assemblies=True)
-    for cam in ['persp', 'top', 'front', 'side']:
-        export_objects.remove(cam)
-
+    export_objects = mc.ls(sl=True)
     if not export_objects:
         return
-
 
     start_frame = int(mc.currentTime(q=True))
     end_frame   = int(mc.currentTime(q=True))
