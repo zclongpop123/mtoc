@@ -68,7 +68,7 @@ def get_ai_tex_data(shader):
         bump_node_type = [x.nodeType() for x in attr_pml_node.connections()]
         if 'aiBump2d' in bump_node_type:
             data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 0
-        
+
         elif 'aiNormalMap' in bump_node_type:
             data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 1
 
@@ -96,13 +96,33 @@ def get_ai_shading_group(shader):
 
 
 
+def get_sg_displace(sg):
+    '''
+    '''
+    attr_pml_node = pm.PyNode('{0}.displacementShader'.format(sg))
+    attr_api_node = attr_pml_node.__apiobject__()    
+    iterator = OpenMaya.MItDependencyGraph(attr_api_node, 
+                                           OpenMaya.MFn.kFileTexture, 
+                                           OpenMaya.MItDependencyGraph.kUpstream,
+                                           OpenMaya.MItDependencyGraph.kDepthFirst,
+                                           OpenMaya.MItDependencyGraph.kPlugLevel)
+
+    while not iterator.isDone():
+        file_api_mfn  = OpenMaya.MFnDependencyNode(iterator.currentItem())
+        file_api_plug = file_api_mfn.findPlug('ftn')
+        yield file_api_plug.asString()
+        iterator.next()
+
+
+
 def get_all_tex_data():
     '''
     '''
     data = dict()
     for shd in mc.ls(typ='aiStandardSurface'):
         sg = list(get_ai_shading_group(shd))
-        data.setdefault(sg[0], dict())[shd] = get_ai_tex_data(shd)
+        data.setdefault(sg[0], dict()).setdefault('shader', dict())[shd] = get_ai_tex_data(shd)
+        data.setdefault(sg[0], dict())['displacement']  = list(get_sg_displace(sg[0]))
     return data
 
 

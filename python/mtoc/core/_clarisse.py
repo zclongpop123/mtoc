@@ -50,15 +50,25 @@ def create_tex_network(_json):
     create_clarisse_hierarchy()
     data = read_tex_data(_json)
 
+    #- create dispalce
+    for sg, sg_data in data.items():
+        for dis in sg_data.get('displacement', list()):
+            map_node = ix.cmds.CreateObject('displacement', 'TextureStreamedMapFile', 'Global', 'build://project/scene/tex')
+            ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [re.sub('\.\d{4}\.', '.<UDIM>.', dis)])
+
+            dis_node = ix.cmds.CreateObject('{0}__displacement'.format(sg), 'Displacement', 'Global', 'build://project/scene/mat')
+            ix.cmds.SetTexture(['{0}.front_value'.format(dis_node)], map_node)
+
+    #- create shader
     shder_data = dict()
     for _dt in data.values():
-        shder_data.update(_dt)
+        shder_data.update(_dt.get('shader', dict()))
 
-    for shd, shader_data in shder_data.items():
+    for shd, shd_data in shder_data.items():
         if not factory.item_exists('build://project/scene/mat/{0}'.format(shd)):
             shader_node = ix.cmds.CreateObject(shd, 'MaterialPhysicalAutodeskStandardSurface', 'Global', 'build://project/scene/mat')
 
-        for attr, attr_data  in shader_data.items():
+        for attr, attr_data  in shd_data.items():
             _cla_attr = env.MAYA_CLA_ATTR_MAPPING.get(attr.split('.')[-1])
             if not _cla_attr:
                 continue
@@ -95,7 +105,8 @@ def create_tex_network(_json):
     for i in range(object_list.get_count()):
         sg = object_list[i].get_module().get_geometry().get_shading_group_names()
         for j in range(sg.get_count()):
-            shader = data.get(sg[j])
+            shader = data.get(sg[j], dict()).get('shader')
             if not shader:
                 continue
-            ix.cmds.SetValues(['{0}.materials[{1}]'.format(object_list[i], j)], ['build://project/scene/mat/{0}'.format(list(shader.keys())[0])])
+            ix.cmds.SetValues(['{0}.materials[{1}]'.format(object_list[i], j)],     ['build://project/scene/mat/{0}'.format(list(shader.keys())[0])])
+            ix.cmds.SetValues(['{0}.displacements[{1}]'.format(object_list[i], j)], ['build://project/scene/mat/{0}__displacement'.format(sg[j])])
