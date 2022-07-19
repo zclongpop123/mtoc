@@ -10,7 +10,7 @@ import maya.mel as mel
 import maya.OpenMaya as OpenMaya
 from .. import env
 #--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-EXPORT_ARGS   = '-stripNamespaces -uvWrite -writeUVSets -writeFaceSets -worldSpace -writeVisibility -dataFormat ogawa'
+EXPORT_ARGS   = '-stripNamespaces -uvWrite -writeVisibility -eulerFilter -writeUVSets -writeFaceSets -worldSpace -dataFormat ogawa'
 
 def export_alembic(_abc):
     '''

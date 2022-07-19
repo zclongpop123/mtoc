@@ -50,10 +50,20 @@ def create_tex_network(_json):
     create_clarisse_hierarchy()
     data = read_tex_data(_json)
 
+    #-
+    sg_list = list()
+    object_list = ix.api.OfObjectArray()
+    ix.application.get_factory().get_all_objects('GeometryAbcMesh', object_list)
+
+    for i in range(object_list.get_count()):
+        sg = object_list[i].get_module().get_geometry().get_shading_group_names()
+        sg_list.extend([sg[j] for j in range(sg.get_count())])
+
     #- create dispalce
     for sg, sg_data in data.items():
         for dis in sg_data.get('displacement', list()):
             map_node = ix.cmds.CreateObject('displacement', 'TextureStreamedMapFile', 'Global', 'build://project/scene/tex')
+            ix.cmds.SetValues(['{0}.use_raw_data'.format(map_node)], ['1'])
             ix.cmds.SetValues(['{0}.filename[0]'.format(map_node)],  [re.sub('\.\d{4}\.', '.<UDIM>.', dis)])
 
             dis_node = ix.cmds.CreateObject('{0}__displacement'.format(sg), 'Displacement', 'Global', 'build://project/scene/mat')
@@ -61,7 +71,9 @@ def create_tex_network(_json):
 
     #- create shader
     shder_data = dict()
-    for _dt in data.values():
+    for sg, _dt in data.items():
+        if sg not in sg_list:
+            continue
         shder_data.update(_dt.get('shader', dict()))
 
     for shd, shd_data in shder_data.items():
@@ -109,4 +121,6 @@ def create_tex_network(_json):
             if not shader:
                 continue
             ix.cmds.SetValues(['{0}.materials[{1}]'.format(object_list[i], j)],     ['build://project/scene/mat/{0}'.format(list(shader.keys())[0])])
-            ix.cmds.SetValues(['{0}.displacements[{1}]'.format(object_list[i], j)], ['build://project/scene/mat/{0}__displacement'.format(sg[j])])
+            dis_mat = 'build://project/scene/mat/{0}__displacement'.format(sg[j])
+            if factory.item_exists(dis_mat):
+                ix.cmds.SetValues(['{0}.displacements[{1}]'.format(object_list[i], j)], [dis_mat])
