@@ -51,15 +51,19 @@ def get_ai_tex_data(shader):
         attr_pml_node = pm.PyNode('{0}.{1}'.format(shader, attr))
         attr_api_node = attr_pml_node.__apiobject__()
         iterator = OpenMaya.MItDependencyGraph(attr_api_node, 
-                                               OpenMaya.MFn.kFileTexture, 
+                                               OpenMaya.MFn.kDependencyNode, 
                                                OpenMaya.MItDependencyGraph.kUpstream,
                                                OpenMaya.MItDependencyGraph.kDepthFirst,
                                                OpenMaya.MItDependencyGraph.kPlugLevel)
 
         while not iterator.isDone():
             file_api_mfn  = OpenMaya.MFnDependencyNode(iterator.currentItem())
-            file_api_plug = file_api_mfn.findPlug('ftn')
-            data.setdefault('{0}.{1}'.format(shader, attr), dict())['path'] = file_api_plug.asString()
+            if file_api_mfn.typeName() == 'file':
+                file_api_plug = file_api_mfn.findPlug('ftn')
+                data.setdefault('{0}.{1}'.format(shader, attr), dict())['path'] = file_api_plug.asString()
+            elif file_api_mfn.typeName() == 'RedshiftNormalMap':
+                file_api_plug = file_api_mfn.findPlug('tex0')
+                data.setdefault('{0}.{1}'.format(shader, attr), dict())['path'] = file_api_plug.asString()                
             iterator.next()
 
         #- 0: bump
