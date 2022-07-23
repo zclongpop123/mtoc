@@ -45,7 +45,9 @@ def get_ai_tex_data(shader):
     '''
     '''
     data = dict()
-    for attr in env.MAYA_CLA_ATTR_MAPPING.keys():
+    shader_type = mc.nodeType(shader)
+    data['type'] = shader_type
+    for attr in env.MAYA_CLA_ATTR_MAPPING.get(shader_type, dict()).keys():
         attr_pml_node = pm.PyNode('{0}.{1}'.format(shader, attr))
         attr_api_node = attr_pml_node.__apiobject__()
         iterator = OpenMaya.MItDependencyGraph(attr_api_node, 
@@ -60,7 +62,8 @@ def get_ai_tex_data(shader):
             data.setdefault('{0}.{1}'.format(shader, attr), dict())['path'] = file_api_plug.asString()
             iterator.next()
 
-
+        #- 0: bump
+        #- 1: normal
         bump_node_type = [x.nodeType() for x in attr_pml_node.connections()]
         if 'aiBump2d' in bump_node_type:
             data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 0
@@ -68,10 +71,14 @@ def get_ai_tex_data(shader):
         elif 'aiNormalMap' in bump_node_type:
             data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 1
 
+        elif 'RedshiftBumpMap' in bump_node_type:
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = attr_pml_node.connections()[0].attr('inputType').get()
+
+        elif 'RedshiftNormalMap' in bump_node_type:
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 1
+
         elif 'bump2d' in bump_node_type:
-            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = attr_pml_node.connections()[0].attr('bumpInterp').get()
-
-
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = attr_pml_node.connections()[0].attr('inputType').get()
 
     return data
 
@@ -115,7 +122,7 @@ def get_all_tex_data():
     '''
     '''
     data = dict()
-    for shd in mc.ls(typ='aiStandardSurface'):
+    for shd in mc.ls(typ=('aiStandardSurface', 'RedshiftMaterial')):
         sg = list(get_ai_shading_group(shd))
         data.setdefault(sg[0], dict()).setdefault('shader', dict())[shd] = get_ai_tex_data(shd)
         data.setdefault(sg[0], dict())['displacement']  = list(get_sg_displace(sg[0]))

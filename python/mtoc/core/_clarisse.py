@@ -81,7 +81,10 @@ def create_tex_network(_json):
             shader_node = ix.cmds.CreateObject(shd, 'MaterialPhysicalAutodeskStandardSurface', 'Global', 'build://project/scene/mat')
 
         for attr, attr_data  in shd_data.items():
-            _cla_attr = env.MAYA_CLA_ATTR_MAPPING.get(attr.split('.')[-1])
+            if attr in ('type', ):
+                continue
+
+            _cla_attr = env.MAYA_CLA_ATTR_MAPPING.get(shd_data.get('type', 'aiStandardSurface')).get(attr.split('.')[-1])
             if not _cla_attr:
                 continue
             if not factory.item_exists('build://project/scene/tex/{0}'.format(attr.replace('.', '__'))):
