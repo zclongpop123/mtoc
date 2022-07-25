@@ -82,7 +82,7 @@ def get_ai_tex_data(shader):
             data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = 1
 
         elif 'bump2d' in bump_node_type:
-            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = attr_pml_node.connections()[0].attr('inputType').get()
+            data.setdefault('{0}.{1}'.format(shader, attr), dict())['bumpInterp'] = attr_pml_node.connections()[0].attr('bumpInterp').get()
 
     return data
 
