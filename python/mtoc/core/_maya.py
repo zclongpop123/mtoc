@@ -37,6 +37,18 @@ def export_alembic(_abc):
                                                                               ' -root '.join(export_objects), 
                                                                               cache_file)
 
+    for sg in mc.ls(typ='shadingEngine'):
+        members = mc.sets(sg, q=True)
+        if not members:
+            continue
+        members.extend(['{0}.f[:]'.format(s) for s in members if '.' not in s])
+
+        for m in members:
+            if '.' not in m:
+                mc.sets(m, e=True, remove=sg)
+            else:
+                mc.sets(m, e=True, forceElement=sg)
+
     mel.eval(export_cmds)
 
 
