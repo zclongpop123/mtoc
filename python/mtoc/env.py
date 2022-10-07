@@ -13,8 +13,9 @@ MAYA_CLA_ATTR_MAPPING = {
         'metalness'         : 'metalness',
         'normalCamera'      : 'normal_input',
         'opacity'           : 'opacity',
-        'specularRoughness' : 'specular_roughness'    
-        },
+        'specularRoughness' : 'specular_roughness',
+        'emissionColor'     : 'emission_color'
+    },
 
     'RedshiftMaterial': {
         'diffuse_color'     : 'base_color',
