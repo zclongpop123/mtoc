@@ -22,6 +22,7 @@ MAYA_CLA_ATTR_MAPPING = {
         'bump_input'        : 'normal_input',
         'opacity_color'     : 'opacity',
         'refl_metalness'    : 'metalness',
-        'refl_roughness'    : 'specular_roughness'    
+        'refl_roughness'    : 'specular_roughness',
+        'emission_color'    : 'emission_color'
     }
 }
