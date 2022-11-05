@@ -115,6 +115,30 @@ def get_ai_shading_group(shader):
 
 
 
+def get_sel_shading_nodes():
+    '''
+    get shadingEngine nodes by selected geometrys.
+    '''
+    #- get selected geometry
+    mc.select(hi=True)
+    geo_selection = OpenMaya.MSelectionList()
+    OpenMaya.MGlobal.getActiveSelectionList(geo_selection)
+
+    #-
+    geo_iterator = OpenMaya.MItSelectionList(geo_selection)
+    geo_mobject  = OpenMaya.MObject()
+    while not geo_iterator.isDone():
+        geo_iterator.getDependNode(geo_mobject)
+
+        sg_iterator = OpenMaya.MItDependencyGraph(geo_mobject, OpenMaya.MFn.kShadingEngine, OpenMaya.MItDependencyGraph.kDownstream)
+        while not sg_iterator.isDone():
+            yield OpenMaya.MFnDependencyNode(sg_iterator.currentItem()).name()
+            sg_iterator.next()
+
+        geo_iterator.next()
+
+
+
 def get_sg_displace(sg):
     '''
     '''
@@ -137,9 +161,13 @@ def get_sg_displace(sg):
 def get_all_tex_data():
     '''
     '''
+    sel_geo_sg = list(get_sel_shading_nodes())
     data = dict()
-    for shd in mc.ls(typ=('aiStandardSurface', 'RedshiftMaterial')):
+    all_shaders = mc.ls(typ='aiStandardSurface') + mc.ls(typ='RedshiftMaterial')
+    for shd in all_shaders:
         sg = list(get_ai_shading_group(shd))
+        if sg[0] not in sel_geo_sg:
+            continue
         data.setdefault(sg[0], dict()).setdefault('shader', dict())[shd] = get_ai_tex_data(shd)
         data.setdefault(sg[0], dict())['displacement']  = list(get_sg_displace(sg[0]))
     return data
