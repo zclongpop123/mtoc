@@ -14,6 +14,7 @@ MAYA_CLA_ATTR_MAPPING = {
         'normalCamera'      : 'normal_input',
         'opacity'           : 'opacity',
         'specularRoughness' : 'specular_roughness',
+        'specularColor'     : 'specular_color',
         'emissionColor'     : 'emission_color'
     },
 
@@ -23,6 +24,7 @@ MAYA_CLA_ATTR_MAPPING = {
         'opacity_color'     : 'opacity',
         'refl_metalness'    : 'metalness',
         'refl_roughness'    : 'specular_roughness',
+        'refl_color'        : 'specular_color',
         'emission_color'    : 'emission_color'
     }
 }
